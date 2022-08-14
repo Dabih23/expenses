@@ -1,10 +1,18 @@
 import 'package:expenses/widgets/chart.dart';
+import 'package:flutter/services.dart';
 import './widgets/transaction_list.dart';
 import './widgets/new_transaction.dart';
 import 'package:flutter/material.dart';
 import 'models/transaction.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  //только вертикальное расположение
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -45,20 +53,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final List<Transaction> _usertransaction = [
-    // Transaction(
-    //   id: '123',
-    //   title: 'MacBook',
-    //   amount: 3500,
-    //   date: DateTime.now(),
-    // ),
-    // Transaction(
-    //   id: '122',
-    //   title: 'Apple Watch',
-    //   amount: 700,
-    //   date: DateTime.now(),
-    // ),
-  ];
+  final List<Transaction> _usertransaction = [];
 
 //геттер который получает дни, которые не позднее 7 дней от настоящей даты
   List<Transaction> get _rT {
@@ -108,25 +103,38 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final appbar = AppBar(
+      title: Text('Flutter App'),
+      actions: <Widget>[
+        IconButton(
+          onPressed: () {
+            _startAddNemTransaction(context);
+          },
+          icon: Icon(Icons.add),
+        ),
+      ],
+    );
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Flutter App'),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {
-              _startAddNemTransaction(context);
-            },
-            icon: Icon(Icons.add),
-          ),
-        ],
-      ),
+      appBar: appbar,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Chart(_rT),
-            TransactionList(_usertransaction, _deleteTransaction),
+            Container(
+                //(высота - высота appbar) * 30%
+                height: (MediaQuery.of(context).size.height -
+                        appbar.preferredSize.height -
+                        //- полоска наверху телефона
+                        MediaQuery.of(context).padding.top) *
+                    0.3,
+                child: Chart(_rT)),
+            Container(
+                height: (MediaQuery.of(context).size.height -
+                        appbar.preferredSize.height -
+                        MediaQuery.of(context).padding.top) *
+                    0.7,
+                child: TransactionList(_usertransaction, _deleteTransaction)),
           ],
         ),
       ),
