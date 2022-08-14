@@ -51,11 +51,13 @@ class Chart extends StatelessWidget {
           children: gTV.map((data) {
             return Flexible(
               // fit: FlexFit.loose, переносит значения на другую строчку
-              fit: FlexFit.tight,//используем только доступное пространство
+              fit: FlexFit.tight, //используем только доступное пространство
               child: ChartBar(
                 (data['day'].toString()),
                 (data['amount'] as double),
-                totalSpending == 0.0 ? 0.0 : (data['amount'] as double) / totalSpending,
+                totalSpending == 0.0
+                    ? 0.0
+                    : (data['amount'] as double) / totalSpending,
               ),
             );
           }).toList(),
